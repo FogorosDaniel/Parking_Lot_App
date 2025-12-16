@@ -1,35 +1,37 @@
 package org.example.parkinglot.entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
+
+import java.io.Serializable;
 
 @Entity
 @Table(name = "cars")
-public class Car {
+public class Car implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @Column(name = "id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "license_plate")
+    @Size(min = 1, max = 100)
+    @Column(unique = true, nullable = false, name = "license_plate") // AICI ERA PROBLEMA
     private String licensePlate;
 
-    @Column(name = "parking_spot")
+    @Size(min = 1, max = 100)
+    @Column(unique = true, nullable = false, name = "parking_spot") // SI AICI
     private String parkingSpot;
 
-    // --- RELAȚIA: O Mașină are un singur Proprietar (User) ---
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "owner_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "owner_id", nullable = false) // SI AICI
     private User owner;
 
-    public User getOwner() {
-        return owner;
+    // --- Constructor gol (obligatoriu pentru JPA) ---
+    public Car() {
     }
 
-    public void setOwner(User owner) {
-        this.owner = owner;
-    }
-    // ---------------------------------------------------------
+    // --- Getters si Setters ---
 
     public Long getId() {
         return id;
@@ -53,5 +55,13 @@ public class Car {
 
     public void setParkingSpot(String parkingSpot) {
         this.parkingSpot = parkingSpot;
+    }
+
+    public User getOwner() {
+        return owner;
+    }
+
+    public void setOwner(User owner) {
+        this.owner = owner;
     }
 }
