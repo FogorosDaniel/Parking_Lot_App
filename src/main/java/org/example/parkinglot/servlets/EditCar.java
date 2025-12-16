@@ -2,6 +2,8 @@ package org.example.parkinglot.servlets;
 
 import jakarta.inject.Inject;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.HttpConstraint;
+import jakarta.servlet.annotation.ServletSecurity;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -14,6 +16,7 @@ import org.example.parkinglot.ejb.UsersBean;
 import java.io.IOException;
 import java.util.List;
 
+@ServletSecurity(value = @HttpConstraint(rolesAllowed = {"WRITE_CARS"}))
 @WebServlet(name = "EditCar", value = "/EditCar")
 public class EditCar extends HttpServlet {
 
@@ -25,14 +28,12 @@ public class EditCar extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // 1. Luam lista de useri (pentru dropdown)
+        // 1. Luam lista de useri pentru dropdown
         List<UserDto> users = usersBean.findAllUsers();
         request.setAttribute("users", users);
 
-        // 2. Luam ID-ul masinii din URL (ex: EditCar?id=5)
+        // 2. Cautam masina pe care vrem sa o editam
         Long carId = Long.parseLong(request.getParameter("id"));
-
-        // 3. Cautam datele masinii ca sa le punem in formular
         CarDto car = carsBean.findById(carId);
         request.setAttribute("car", car);
 
@@ -42,18 +43,14 @@ public class EditCar extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
-            // 1. Luam datele din formular
             String licensePlate = request.getParameter("license_plate");
             String parkingSpot = request.getParameter("parking_spot");
             Long userId = Long.parseLong(request.getParameter("owner_id"));
-            Long carId = Long.parseLong(request.getParameter("car_id")); // ID-ul ascuns
+            Long carId = Long.parseLong(request.getParameter("car_id"));
 
-            // 2. Actualizam masina
             carsBean.updateCar(carId, licensePlate, parkingSpot, userId);
 
-            // 3. Redirect la lista
             response.sendRedirect(request.getContextPath() + "/Cars");
-
         } catch (Exception e) {
             e.printStackTrace();
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Eroare la editare: " + e.getMessage());
