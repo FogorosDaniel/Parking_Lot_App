@@ -70,4 +70,20 @@ public class UsersBean {
                 .getResultList();
         return usernames;
     }
+
+    public UserDto findById(Long id) {
+        User user = entityManager.find(User.class, id);
+        return new UserDto(user.getId(), user.getUsername(), user.getEmail());
+    }
+
+    public void updateUser(Long userId, String email, String password) {
+        LOG.info("updateUser");
+        User user = entityManager.find(User.class, userId);
+        user.setEmail(email);
+
+        // Logica pentru parola: o schimbam doar daca nu e goala
+        if (password != null && !password.isEmpty()) {
+            user.setPassword(passwordBean.convertToSha256(password));
+        }
+    }
 }

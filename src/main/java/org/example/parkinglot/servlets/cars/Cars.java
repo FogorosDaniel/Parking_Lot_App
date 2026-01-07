@@ -1,4 +1,4 @@
-package org.example.parkinglot.servlets;
+package org.example.parkinglot.servlets.cars;
 
 import jakarta.annotation.security.DeclareRoles;
 import jakarta.inject.Inject;
@@ -34,8 +34,9 @@ public class Cars extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         List<CarDto> cars = carsBean.findAllCars();
         request.setAttribute("cars", cars);
-        request.setAttribute("numberOfFreeParkingSpots", 18);
-        request.getRequestDispatcher("/WEB-INF/pages/cars.jsp").forward(request, response);
+        int totalParkingSpots = 10;
+        Long occupiedSpots = carsBean.getCarsCount();
+        request.setAttribute("numberOfFreeParkingSpots", totalParkingSpots - occupiedSpots);        request.getRequestDispatcher("/WEB-INF/pages/cars/cars.jsp").forward(request, response);
     }
 
     @Override

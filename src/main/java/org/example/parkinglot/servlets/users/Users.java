@@ -1,4 +1,4 @@
-package org.example.parkinglot.servlets;
+package org.example.parkinglot.servlets.users;
 
 import jakarta.inject.Inject;
 import jakarta.servlet.ServletException;
@@ -34,24 +34,34 @@ public class Users extends HttpServlet {
         List<UserDto> users = usersBean.findAllUsers();
         request.setAttribute("users", users);
 
+        // DEBUG: Vedem cate ID-uri sunt in memorie
+        System.out.println("ID-uri in memorie: " + invoiceBean.getUserIds().size());
+
         if (!invoiceBean.getUserIds().isEmpty()) {
             Collection<String> usernames = usersBean.findUsernamesByUserIds(invoiceBean.getUserIds());
             request.setAttribute("invoices", usernames);
+
+            // DEBUG: Vedem daca a gasit nume
+            System.out.println("Am trimis catre JSP lista cu marime: " + usernames.size());
         }
 
-        request.getRequestDispatcher("/WEB-INF/pages/users.jsp").forward(request, response);
+        request.getRequestDispatcher("/WEB-INF/pages/users/users.jsp").forward(request, response);
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        // Citim ce ai bifat
         String[] userIdsAsString = request.getParameterValues("user_ids");
+
         if (userIdsAsString != null) {
             List<Long> userIds = new ArrayList<>();
             for (String userIdAsString : userIdsAsString) {
                 userIds.add(Long.parseLong(userIdAsString));
             }
+            // Salvam in Bean
             invoiceBean.getUserIds().addAll(userIds);
         }
+
         response.sendRedirect(request.getContextPath() + "/Users");
     }
 }

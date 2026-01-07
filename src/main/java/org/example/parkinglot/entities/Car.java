@@ -15,12 +15,12 @@ public class Car implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Size(min = 1, max = 100)
-    @Column(unique = true, nullable = false, name = "license_plate") // AICI ERA PROBLEMA
+    @Size(min = 3, max = 100)
+    @Column(unique = true, nullable = false, length = 100)
     private String licensePlate;
 
-    @Size(min = 1, max = 100)
-    @Column(unique = true, nullable = false, name = "parking_spot") // SI AICI
+    @Size(min = 3, max = 100)
+    @Column(unique = true, nullable = false, length = 100)
     private String parkingSpot;
 
     @ManyToOne(fetch = FetchType.LAZY)

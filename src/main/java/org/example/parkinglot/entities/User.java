@@ -1,6 +1,8 @@
 package org.example.parkinglot.entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+
 import java.io.Serializable;
 import java.util.Collection;
 
@@ -13,10 +15,12 @@ public class User implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true, nullable = false, name = "username")
+    @Basic
+    @Column(unique = true, nullable = false, length = 100)
     private String username;
 
-    @Column(unique = true, nullable = false, name = "email")
+    @Email
+    @Column(unique = true, nullable = false, length = 100)
     private String email;
 
     @Column(name = "password")
