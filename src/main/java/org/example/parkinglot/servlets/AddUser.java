@@ -41,6 +41,7 @@ public class AddUser extends HttpServlet {
             }
 
             // Salvam userul folosind EJB-ul (care cripteaza parola si salveaza grupurile)
+
             usersBean.createUser(username, email, password, Arrays.asList(userGroups));
 
             response.sendRedirect(request.getContextPath() + "/Users");

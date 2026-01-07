@@ -64,4 +64,17 @@ public class Car implements Serializable {
     public void setOwner(User owner) {
         this.owner = owner;
     }
+
+    // Adauga asta sub celelalte campuri
+    @OneToOne(mappedBy = "car", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private CarPhoto photo;
+
+    // Adauga asta sub ceilalti getteri/setteri
+    public CarPhoto getPhoto() {
+        return photo;
+    }
+
+    public void setPhoto(CarPhoto photo) {
+        this.photo = photo;
+    }
 }
